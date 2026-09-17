@@ -16,12 +16,12 @@
         .form-group { margin-bottom: 12px; }
         label { display: block; font-weight: bold; margin-bottom: 5px; }
         input[type="text"], input[type="file"] { width: 100%; padding: 8px; box-sizing: border-box; }
+        #status-msg { font-weight: bold; margin-top: 10px; }
     </style>
 </head>
 <body>
     <h1>CloudDoc Manager Dashboard</h1>
 
-    <!-- Upload Form Card -->
     <div class="card">
         <h3>Upload New Document</h3>
         <form id="upload-form">
@@ -38,10 +38,10 @@
                 <input type="file" id="doc-file" required>
             </div>
             <button type="submit" class="btn">Upload Document</button>
+            <div id="status-msg"></div>
         </form>
     </div>
 
-    <!-- Document List Card -->
     <div class="card">
         <h3>Uploaded Documents</h3>
         <table>
@@ -92,23 +92,37 @@
                 });
         }
 
-        document.getElementById("upload-form").addEventListener("submit", function(e) {
+        async function tryUpload(url, formData) {
+            const res = await fetch(url, { method: "POST", body: formData });
+            return res;
+        }
+
+        document.getElementById("upload-form").addEventListener("submit", async function(e) {
             e.preventDefault();
+            const msg = document.getElementById("status-msg");
+            msg.style.color = "blue";
+            msg.innerText = "Uploading...";
+
             const formData = new FormData();
             formData.append("title", document.getElementById("doc-title").value);
             formData.append("category", document.getElementById("doc-category").value);
             formData.append("file", document.getElementById("doc-file").files[0]);
 
-            fetch("/api/documents", { method: "POST", body: formData })
-                .then(res => {
-                    if(res.ok) {
-                        alert("Document uploaded successfully!");
-                        document.getElementById("upload-form").reset();
-                        loadDocuments();
-                    } else {
-                        alert("Upload failed.");
-                    }
-                });
+            // Try standard endpoint first, fallback to /upload if needed
+            let response = await tryUpload("/api/documents", formData);
+            if (!response.ok) {
+                response = await tryUpload("/api/documents/upload", formData);
+            }
+
+            if(response.ok) {
+                msg.style.color = "green";
+                msg.innerText = "Document uploaded successfully!";
+                document.getElementById("upload-form").reset();
+                loadDocuments();
+            } else {
+                msg.style.color = "red";
+                msg.innerText = "Upload failed with status: " + response.status;
+            }
         });
 
         function deleteDoc(id) {
