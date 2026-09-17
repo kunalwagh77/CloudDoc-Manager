@@ -20,7 +20,8 @@ spring:
       max-request-size: ${UPLOAD_MAX_REQUEST_SIZE:25MB}
 
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: native
 
 app:
   security:
@@ -28,21 +29,27 @@ app:
   cors:
     allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5500}
   storage:
-    provider: ${STORAGE_PROVIDER:cloudinary}
+    provider: ${STORAGE_PROVIDER:local}
     max-file-size-bytes: ${UPLOAD_MAX_FILE_SIZE_BYTES:26214400}
     cloudinary:
-      cloud-name: ${CLOUDINARY_CLOUD_NAME:}
-      api-key: ${CLOUDINARY_API_KEY:}
-      api-secret: ${CLOUDINARY_API_SECRET:}
+      cloud-name: ${CLOUDINARY_CLOUD_NAME:dummy_name}
+      api-key: ${CLOUDINARY_API_KEY:dummy_key}
+      api-secret: ${CLOUDINARY_API_SECRET:dummy_secret}
       folder: ${CLOUDINARY_FOLDER:clouddoc}
     local:
       directory: ${LOCAL_STORAGE_DIRECTORY:uploads}
       public-base-url: ${LOCAL_STORAGE_PUBLIC_BASE_URL:http://localhost:${SERVER_PORT:8080}/uploads}
     s3:
-      bucket: ${AWS_S3_BUCKET:}
+      bucket: ${AWS_S3_BUCKET:dummy_bucket}
       region: ${AWS_REGION:us-east-1}
-      public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
+      public-base-url: ${AWS_S3_PUBLIC_BASE_URL:http://localhost:8080}
 
 springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
+    config-url: /v3/api-docs/swagger-config
+    url: /v3/api-docs
