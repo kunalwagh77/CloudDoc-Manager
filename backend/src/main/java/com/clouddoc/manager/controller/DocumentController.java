@@ -52,17 +52,17 @@ public class DocumentController {
             String cloudUrl = "/uploads/" + generatedFileName;
 
             Document doc = new Document(
-                title,                                 // 1. title
-                category != null ? category : "General",// 2. category
-                file.getOriginalFilename(),            // 3. fileName
-                file.getContentType(),                 // 4. type / mimeType
-                file.getSize(),                        // 5. size (long)
-                cloudUrl,                              // 6. cloudUrl
-                "local-user",                          // 7. owner / userId
-                "active",                              // 8. status
-                "public",                              // 9. accessLevel
-                OffsetDateTime.now(),                  // 10. uploadTimestamp (OffsetDateTime)
-                "system"                               // 11. description / source
+                title,
+                category != null ? category : "General",
+                file.getOriginalFilename(),
+                file.getContentType(),
+                file.getSize(),
+                cloudUrl,
+                "local-user",
+                "active",
+                "public",
+                OffsetDateTime.now(),
+                "system"
             );
 
             Document savedDoc = documentRepository.save(doc);
