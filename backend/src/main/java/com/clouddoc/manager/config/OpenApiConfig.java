@@ -13,7 +13,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("CloudDoc Manager API")
-                        .version("1.0.0")
-                        .description("CloudDoc Backend Documentation"));
+                        .version("1.0")
+                        .description("API Documentation"));
     }
 }
