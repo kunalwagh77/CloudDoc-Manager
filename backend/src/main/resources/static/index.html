@@ -92,36 +92,37 @@
                 });
         }
 
-        async function tryUpload(url, formData) {
-            const res = await fetch(url, { method: "POST", body: formData });
-            return res;
-        }
-
         document.getElementById("upload-form").addEventListener("submit", async function(e) {
             e.preventDefault();
             const msg = document.getElementById("status-msg");
             msg.style.color = "blue";
-            msg.innerText = "Uploading...";
+            msg.innerText = "Uploading file to server...";
 
+            const fileInput = document.getElementById("doc-file").files[0];
             const formData = new FormData();
             formData.append("title", document.getElementById("doc-title").value);
             formData.append("category", document.getElementById("doc-category").value);
-            formData.append("file", document.getElementById("doc-file").files[0]);
+            formData.append("file", fileInput);
 
-            // Try standard endpoint first, fallback to /upload if needed
-            let response = await tryUpload("/api/documents", formData);
-            if (!response.ok) {
-                response = await tryUpload("/api/documents/upload", formData);
-            }
+            try {
+                const res = await fetch("/api/documents", {
+                    method: "POST",
+                    body: formData
+                });
 
-            if(response.ok) {
-                msg.style.color = "green";
-                msg.innerText = "Document uploaded successfully!";
-                document.getElementById("upload-form").reset();
-                loadDocuments();
-            } else {
+                if(res.ok) {
+                    msg.style.color = "green";
+                    msg.innerText = "Document uploaded and saved to DB!";
+                    document.getElementById("upload-form").reset();
+                    loadDocuments();
+                } else {
+                    const errorData = await res.text();
+                    msg.style.color = "red";
+                    msg.innerText = "Server Error 500: Check storage path or Controller configuration.";
+                }
+            } catch(err) {
                 msg.style.color = "red";
-                msg.innerText = "Upload failed with status: " + response.status;
+                msg.innerText = "Network upload failed.";
             }
         });
 
