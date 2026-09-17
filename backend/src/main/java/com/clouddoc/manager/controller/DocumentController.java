@@ -1,6 +1,7 @@
 package com.clouddoc.manager.controller;
 
-import com.clouddoc.manager.document.*;
+import com.clouddoc.manager.document.Document;
+import com.clouddoc.manager.document.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
@@ -44,18 +45,24 @@ public class DocumentController {
                 dir.mkdirs();
             }
 
-            String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(UPLOAD_DIR + fileName);
+            String generatedFileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(UPLOAD_DIR + generatedFileName);
             Files.write(filePath, file.getBytes());
 
+            String cloudUrl = "/uploads/" + generatedFileName;
+
             Document doc = new Document(
-                title, 
-                category, 
-                file.getOriginalFilename(), 
-                file.getSize(), 
-                file.getContentType(), 
-                "/uploads/" + fileName, 
-                LocalDateTime.now().toString()
+                title,                                 // 1. title
+                category != null ? category : "General",// 2. category
+                file.getOriginalFilename(),            // 3. fileName
+                file.getContentType(),                 // 4. type / mimeType
+                file.getSize(),                        // 5. size (long)
+                cloudUrl,                              // 6. cloudUrl
+                "local-user",                          // 7. owner / userId
+                "active",                              // 8. status
+                "public",                              // 9. accessLevel
+                OffsetDateTime.now(),                  // 10. uploadTimestamp (OffsetDateTime)
+                "system"                               // 11. description / source
             );
 
             Document savedDoc = documentRepository.save(doc);
