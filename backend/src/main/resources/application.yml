@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: cloud-doc-manager
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/clouddoc_db}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:Kunal123}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      max-file-size: ${UPLOAD_MAX_FILE_SIZE:25MB}
+      max-request-size: ${UPLOAD_MAX_REQUEST_SIZE:25MB}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+app:
+  security:
+    development-principal: ${DEVELOPMENT_PRINCIPAL:local-user}
+  cors:
+    allowed-origin: ${FRONTEND_ORIGIN:http://localhost:5500}
+  storage:
+    provider: ${STORAGE_PROVIDER:cloudinary}
+    max-file-size-bytes: ${UPLOAD_MAX_FILE_SIZE_BYTES:26214400}
+    cloudinary:
+      cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+      api-key: ${CLOUDINARY_API_KEY:}
+      api-secret: ${CLOUDINARY_API_SECRET:}
+      folder: ${CLOUDINARY_FOLDER:clouddoc}
+    local:
+      directory: ${LOCAL_STORAGE_DIRECTORY:uploads}
+      public-base-url: ${LOCAL_STORAGE_PUBLIC_BASE_URL:http://localhost:${SERVER_PORT:8080}/uploads}
+    s3:
+      bucket: ${AWS_S3_BUCKET:}
+      region: ${AWS_REGION:us-east-1}
+      public-base-url: ${AWS_S3_PUBLIC_BASE_URL:}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

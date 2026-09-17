@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudDoc Manager</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">CLOUDDOC MANAGER</p>
+        <h1>Your document library</h1>
+      </div>
+      <span class="status-dot">Cloud storage ready</span>
+    </header>
+
+    <section class="upload-panel" aria-labelledby="upload-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">ADD TO LIBRARY</p>
+          <h2 id="upload-heading">Upload a document</h2>
+        </div>
+        <p class="section-note">Files are stored securely in your configured cloud provider.</p>
+      </div>
+      <form id="upload-form" novalidate>
+        <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-describedby="drop-hint">
+          <input id="file-input" name="file" type="file" hidden>
+          <span class="drop-icon" aria-hidden="true">+</span>
+          <strong>Drop a file here</strong>
+          <span id="drop-hint">or choose one from your device</span>
+          <button class="secondary-button" id="choose-file" type="button">Choose file</button>
+          <span class="selected-file" id="selected-file">No file selected</span>
+        </div>
+        <div class="form-grid">
+          <label>Title<input id="title" name="title" required maxlength="160"></label>
+          <label>Category<input id="category" name="category" required maxlength="80"></label>
+          <label class="full-width">Description<textarea id="description" name="description" required maxlength="1000" rows="3"></textarea></label>
+        </div>
+        <div class="form-actions">
+          <p class="form-message" id="upload-message" role="status"></p>
+          <button class="primary-button" type="submit">Upload document</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="library-section" aria-labelledby="library-heading">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">YOUR LIBRARY</p>
+          <h2 id="library-heading">Documents</h2>
+        </div>
+        <div class="filters">
+          <label class="search-field"><span class="sr-only">Search documents</span><input id="search-input" type="search" placeholder="Search by title or filename"></label>
+          <label><span class="sr-only">Filter by category</span><select id="category-filter"><option value="">All categories</option></select></label>
+        </div>
+      </div>
+      <p class="form-message" id="library-message" role="status"></p>
+      <div class="document-grid" id="document-grid" aria-live="polite"></div>
+    </section>
+  </main>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
