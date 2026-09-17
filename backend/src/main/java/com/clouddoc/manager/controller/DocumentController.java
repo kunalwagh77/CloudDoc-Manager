@@ -1,7 +1,6 @@
 package com.clouddoc.manager.controller;
 
-import com.clouddoc.manager.document.Document;
-import com.clouddoc.manager.repository.DocumentRepository;
+import com.clouddoc.manager.document.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -49,18 +48,19 @@ public class DocumentController {
             Path filePath = Paths.get(UPLOAD_DIR + fileName);
             Files.write(filePath, file.getBytes());
 
-            Document doc = new Document();
-            doc.setTitle(title);
-            doc.setCategory(category);
-            doc.setFileName(file.getOriginalFilename());
-            doc.setSize(file.getSize());
-            doc.setType(file.getContentType());
-            doc.setCloudUrl("/uploads/" + fileName);
-            doc.setUploadTimestamp(LocalDateTime.now().toString());
+            Document doc = new Document(
+                title, 
+                category, 
+                file.getOriginalFilename(), 
+                file.getSize(), 
+                file.getContentType(), 
+                "/uploads/" + fileName, 
+                LocalDateTime.now().toString()
+            );
 
             Document savedDoc = documentRepository.save(doc);
             return ResponseEntity.ok(savedDoc);
-        } catch (IOException e) {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Error uploading file: " + e.getMessage());
         }
     }
