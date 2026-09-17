@@ -1,7 +1,7 @@
 package com.clouddoc.manager.controller;
 
-import com.clouddoc.manager.model.*;
-import com.clouddoc.manager.repository.*;
+import com.clouddoc.model.Document;
+import com.clouddoc.repository.DocumentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
